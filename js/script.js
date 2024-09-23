@@ -262,31 +262,44 @@ function updateAboutSection() {
 	// Fetching API data for the About Us section
 	fetch(`http://localhost:3001/properties/${PROJECTID}/about`)
 		.then(response => response.json())
-		
 		.then(data => {
-			console.log("About Section ",data)
+			console.log("About Section ", data);
+			
 			// Assuming the response data is an array with a single object
 			const aboutData = data[0];
 
 			// Update the About Us image
 			const aboutImageElement = document.querySelector('.dynamicAboutUsImage');
-			aboutImageElement.src = aboutData.image;
-			aboutImageElement.alt = aboutData.title;
+			if (aboutImageElement) {
+				aboutImageElement.src = aboutData.image;
+				aboutImageElement.alt = aboutData.title;
+				
+				// Optionally, adjust image dimensions (if necessary)
+				aboutImageElement.style.width = '546px';
+				aboutImageElement.style.height = '516px';
+			}
 
 			// Update the About Us heading
 			const aboutHeadingElement = document.querySelector('.dynamicAboutUsHead');
-			aboutHeadingElement.textContent = aboutData.title;
+			if (aboutHeadingElement) {
+				aboutHeadingElement.textContent = aboutData.title;
+			}
 
 			// Update the About Us paragraph
 			const aboutParagraphElement = document.querySelector('.dynamicAboutUsPara');
-			aboutParagraphElement.textContent = aboutData.description;
+			if (aboutParagraphElement) {
+				aboutParagraphElement.textContent = aboutData.description;
+			}
 			
-			// Optionally, adjust image dimensions (if necessary)
-			aboutImageElement.style.width = '546px';
-			aboutImageElement.style.height = '516px';
+			// Check if the parallax container exists and update the data-parallax-img attribute
+			const parallaxContainer = document.querySelector('.parallax-container');
+			if (parallaxContainer && parallaxContainer.hasAttribute('data-parallax-img')) {
+				parallaxContainer.setAttribute('data-parallax-img', aboutData.image);
+			}
 		})
 		.catch(error => console.error('Error fetching about data:', error));
 }
+
 
 let swiperInstance = null;
 
