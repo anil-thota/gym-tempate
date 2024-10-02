@@ -186,7 +186,7 @@ function applyUpdates() {
     updateAddressDetails();
 	updateAboutSection();
 	updateCarouselSlides();
-	fetchAndDisplayGalleryProducts();
+	updateAboutUsBanner();
    
 }
 
@@ -349,6 +349,50 @@ function updateCarouselSlides() {
       console.error('Error fetching the banners:', error);
     });
 }
+
+function updateAboutUsBanner() {
+	const apiUrl = `http://localhost:3001/properties/${PROJECTID}/banner`;
+
+	// Fetch banner data from the API using Fetch
+	fetch(apiUrl)
+	  .then(response => {
+		// Check if the response is ok (status in the range 200-299)
+		if (!response.ok) {
+		  throw new Error(`HTTP error! status: ${response.status}`);
+		}
+		return response.json(); // Parse the JSON from the response
+	  })
+	  .then(data => {
+		// Log the response data
+		console.log('API Response:', data);
+
+		// Find the banner with heading "About Coach"
+		const aboutUsBanner = data.categoryBanners.find(banner => 
+		  banner.heading.toLowerCase() === "aboutus"
+		);
+
+		// Check if the banner exists and has a valid image URL
+		if (aboutUsBanner && aboutUsBanner.image) {
+		  // Log the image URL
+		  console.log('About Coach Banner Image URL:', aboutUsBanner.image);
+
+		  // Select the parallax container where the background image needs to be applied
+		  const aboutUsSection = document.querySelector('.breadcrumbs-01');
+
+		  // Log the aboutUsSection to confirm it's selected correctly
+		  console.log('About Coach Section:', aboutUsSection);
+
+		  // Apply the background image using inline CSS
+		  aboutUsSection.setAttribute('data-parallax-img', aboutUsBanner.image);
+		} else {
+		  console.error('No valid banner found with the heading "About Coach".');
+		}
+	  })
+	  .catch(error => {
+		console.error("Error fetching banner data:", error);
+	  });
+}
+
 
 /**
  * Initialize All Scripts
